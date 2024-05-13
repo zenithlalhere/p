@@ -1,0 +1,45 @@
+#Merging two excel dataframes
+
+import pandas as pd
+
+df1 = pd.read_excel('/workshop1.xlsx')
+print("Workshop 1")
+print(df1)
+print()
+df2 = pd.read_excel('/workshop2.xlsx')
+print("Workshop 2")
+print(df2)
+
+df3 = pd.merge(df1,df2, on='Name ', how='inner')
+print("Students who attended both the workshops ")
+print(df3['Name '])
+
+df4 = pd.merge(df1,df2,on='Name ',how='outer')
+df5 = df4.isnull()
+# Dropping rows with no NAN values as that means the person has attended all the workshops
+toBeDropped =[]
+for i in df5.index:
+  row_bool = False
+  for j in df5.columns:
+    row_bool = row_bool or df5.loc[i,j]
+  if not(row_bool):
+    toBeDropped.append(i)
+
+print()
+df4.drop(toBeDropped,axis=0,inplace=True)
+print("Students who attended only one workshop")
+print(df4['Name '])
+
+print()
+print("Row wise concatination")
+df6 = pd.concat([df1,df2],axis=0,ignore_index=True)
+print(df6)
+print("Total Rows: ",len(df6))
+
+print()
+print("Row wise merging with two columns ")
+df7 = pd.merge(df1,df2,how='outer',on=['Name ','Date '])
+print(df7)
+
+print('Descriptive Satistics:')
+print(df7.describe())
